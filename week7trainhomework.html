@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+
+<head>
+
+  	<meta charset="UTF-8">
+ 	 <title>Train Schedule</title>
+ 	 <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="header">
+			<div class="header-title">
+				<h1>Train Schedule</h1>
+			</div>
+		</div>
+		<div class="form">
+			<div class="form-title">
+				<label for="name-input">Train Name:</label>
+                <input class="form-control" id="name-input" type="text">
+			</div>
+			<div class="form-title">
+				<label for="destination-input">Destination:</label>
+                <input class="form-control" id="destination-input" type="text">
+			</div>
+			<div class="form-title">
+				<label for="first-input">First Train (Military Time):</label>
+                <input class="form-control" id="first-input" type="time">
+			</div>
+			<div class="form-title">
+				<label for="frequency-input">Frequency (Minutes):</label>
+                <input class="form-control" id="frequency-input" type="time">
+			</div>
+			<button class="submit">
+				<strong>submit</strong>
+			</button>
+		</div>
+		<div class="schedule">
+			<div class="name-listed">
+				
+			</div>
+			<div class="destination-listed">
+				
+			</div>
+			<div class="frequency-listed">
+				
+			</div>
+			<div class="next-listed">
+				
+			</div>
+			<div class="wait-listed">
+				
+			</div>
+		</div>
+	</div>
+
+  	<script src="https://code.jquery.com/jquery.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+	
+  	<script>
+		  var config = {
+		    apiKey: "AIzaSyAgnM7OhWlW64_au5ibo3hTNSRi0RUx_2U",
+		    authDomain: "number-counter.firebaseapp.com",
+		    databaseURL: "https://number-counter.firebaseio.com",
+		    projectId: "number-counter",
+		    storageBucket: "number-counter.appspot.com",
+		    messagingSenderId: "981283130326"
+		  };
+		  firebase.initializeApp(config);
+
+	    var database = firebase.database();
+
+	    var name = "";
+	    var destination = "";
+	    var first = "";
+	    var frequency = "";
+
+	    $(".submit").on("click", function(event) {
+	      event.preventDefault();
+
+	      name = $(".name-listed").prepend($("#name-input").val().trim());
+	      destination = $(".destination-listed").prepend($("#destination-input").val().trim());
+	      first = $(".first-listed").prepend($("#first-input").val().trim());
+	      frequency = $(".frequency-listed").prepend($("#frequency-input").val().trim());
+	      next();
+	      database.ref().push({
+	        name: name,
+	        destination: destination,
+	        first: first,
+	        frequency: frequency,
+	        dateAdded: firebase.database.ServerValue.TIMESTAMP
+	      });
+
+	    });
+	    database.ref().on("child_added", function(childSnapshot) {
+
+	      console.log("name: " + childSnapshot.val().name);
+	      console.log("destination: " + childSnapshot.val().destination);
+	      console.log("first: " + childSnapshot.val().first);
+	      console.log("frequency: " + childSnapshot.val().frequency);
+
+	      $(".name-listed").prepend(name);
+	      $(".destination-listed").prepend(destination);
+	      $(".frequency-listed").prepend(frequency);
+	      // $(".next-listed").prepend(next);
+	      // $(".wait-listed").prepend(wait);
+
+
+	      // $("#full-member-list").append("<div class='well'><span id='name'> " + childSnapshot.val().name +
+	      //   " </span><span id='email'> " + childSnapshot.val().email +
+	      //   " </span><span id='age'> " + childSnapshot.val().age +
+	      //   " </span><span id='comment'> " + childSnapshot.val().comment + " </span></div>");
+
+	    }, function(errorObject) {
+	      console.log("Errors handled: " + errorObject.code);
+	    });
+	    function next(){
+	    	var time = $("#first-input").val().trim()
+	    	var convertedDate = moment(new Date(time));
+	    	// var time = moment(new Date($("#first-input").val().trim());
+	    	console.log("time is: " + convertedDate)
+	    };
+	    function wait(){
+
+	    };
+  	</script>
+	
+</body>
+
+</html>
